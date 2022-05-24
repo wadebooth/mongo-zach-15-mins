@@ -3,7 +3,9 @@ import { getDb } from './db.js';
 
 interface TvShows {
   name: string;
-  platformIds: ObjectId[];
+  platformIds: string[];
+  genre: string;
+  maturityRating: 'G' | 'PG' | 'PG-13' | 'R' | 'NC-17'
 }
 
 
@@ -15,7 +17,6 @@ const getCollection = async () => {
 export const createTvShows = async (tvShows: TvShows) => {
   const col = await getCollection();
   const ret = await col.insertOne(tvShows);
-
   return ret.insertedId;
 };
 
@@ -25,7 +26,7 @@ export const getTvShows = async (platformId: string) => {
   return ret.toArray();
 };
 
-export const getShowsByPlatform = async (platformId: string) => {
+export const getShowsByPlatform = async (platformId: ObjectId) => {
   const col = await getCollection();
   const ret = col.find({
     platformId,

@@ -1,9 +1,10 @@
+import { ObjectId } from 'mongodb';
 import { getDb } from './db.js';
 
 interface Character {
   name: string;
-  tvShowID: string;
-
+  tvShowId: ObjectId;
+  hasFreeTrial: boolean;
 }
 
 const getCollection = async () => {
@@ -24,7 +25,7 @@ export const getCharacters = async () => {
   return ret.toArray();
 };
 
-export const getCharactersByTvShow = async (tvShowId: string) => {
+export const getCharactersByTvShow = async (tvShowId: ObjectId) => {
   const col = await getCollection();
   const ret = col.find({
     tvShowId,
