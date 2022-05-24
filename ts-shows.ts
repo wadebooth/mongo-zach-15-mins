@@ -1,27 +1,31 @@
+import { ObjectId } from 'mongodb';
 import { getDb } from './db.js';
+
+interface TvShows {
+  name: string;
+  platformIds: ObjectId[];
+}
+
 
 const getCollection = async () => {
   const db = await getDb();
-  return db.collection('tv-shows');
+  return db.collection<TvShows>('tv-shows')
 };
 
-export const createTvShows = async (name, platformIds) => {
+export const createTvShows = async (tvShows: TvShows) => {
   const col = await getCollection();
-  const ret = await col.insertOne({
-    name,
-    platformIds,
-  });
+  const ret = await col.insertOne(tvShows);
 
   return ret.insertedId;
 };
 
-export const getTvShows = async () => {
+export const getTvShows = async (platformId: string) => {
   const col = await getCollection();
   const ret = col.find({});
   return ret.toArray();
 };
 
-export const getShowsByPlatform = async (platformId) => {
+export const getShowsByPlatform = async (platformId: string) => {
   const col = await getCollection();
   const ret = col.find({
     platformId,
@@ -29,7 +33,7 @@ export const getShowsByPlatform = async (platformId) => {
   return ret.toArray();
 };
 
-export const getShowsByName = async (name) => {
+export const getShowsByName = async (name: string) => {
   const col = await getCollection();
   const ret = col.find({
     name: {
@@ -39,7 +43,7 @@ export const getShowsByName = async (name) => {
   return ret.toArray();
 };
 
-export const getShowsByNameExactMatch = async (name) => {
+export const getShowsByNameExactMatch = async (name: string) => {
   const col = await getCollection();
   const ret = col.find({
     name,
